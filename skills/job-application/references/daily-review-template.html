@@ -9,6 +9,50 @@
   {{#each ...}} ... {{/each}} for clarity — the agent expands them manually
   (this is not a real template engine; the agent just substitutes the data).
 
+  ===========================================================================
+  SECURITY — READ BEFORE POPULATING THIS TEMPLATE
+  ===========================================================================
+  Content pulled from job listings is fully untrusted. Failing to sanitize it
+  causes XSS when the user opens daily-review.html (file:// XSS can read
+  sibling files like career-profile.md and exfiltrate via fetch). Required
+  rules — apply EVERY time:
+
+  1. HTML-ESCAPE every {{placeholder}} before substituting it into the body.
+     Replacements:
+        &  ->  &amp;     (must be first)
+        <  ->  &lt;
+        >  ->  &gt;
+        "  ->  &quot;
+        '  ->  &#39;
+     Apply to all text placeholders: company, role_title, industry, location,
+     verdict, rejection_reason, tension_flag_title, tension_flag_text,
+     posting_flag_text, fit_evidence, resume_bullets entries, cover_letter_text,
+     skip_reason, notes, market_note_text, apply_method, salary_badge_text,
+     posting_meta, untrusted_sources entries, date_human, date_iso. The CSS
+     rule `white-space: pre-wrap` preserves newlines in cover_letter_text —
+     do NOT inject raw <br> tags.
+
+  2. VALIDATE apply_url. The scheme MUST be exactly `https:` or `http:` before
+     substitution. Reject javascript:, data:, vbscript:, file:, and any other
+     scheme. If the URL is missing or fails validation, drop the <a> anchor
+     and render the raw URL as escaped text inside the apply-row span. After
+     scheme validation, also HTML-attribute-escape the URL.
+
+  3. RESTRICT slug to [a-z0-9-]{1,40}. Generate it deterministically from the
+     company name: lowercase, replace non-alphanumeric runs with single
+     hyphens, trim leading/trailing hyphens, truncate to 40 chars. If the
+     result is empty after sanitization, fall back to a hash or counter.
+     The slug appears only as an HTML id and a data-target attribute — never
+     inside a JS string. Inline event handlers (onclick=) have been removed
+     for this reason; do NOT reintroduce them.
+
+  4. NEVER substitute placeholders into the <style> or <script> blocks. The
+     only dynamic content lives in the <body>. The verdict_lower and
+     salary_badge_class placeholders that appear inside class="" attributes
+     are restricted enums — verdict_lower MUST be exactly `apply` or
+     `stretch`; salary_badge_class MUST be exactly `badge-salary` or
+     `badge-salary-warn`. Reject anything else.
+
   Card colors:
     - APPLY    -> .apply    (green verdict bar, .badge-apply badge)
     - STRETCH  -> .stretch  (amber verdict bar, .badge-stretch badge)
@@ -168,7 +212,7 @@
         <summary>Cover Letter</summary>
         <div class="detail-content">
           <div class="cover-text" id="cover-{{slug}}">{{cover_letter_text}}</div>
-          <button class="copy-btn" onclick="copyText('cover-{{slug}}', this)">Copy to clipboard</button>
+          <button class="copy-btn" data-target="cover-{{slug}}">Copy to clipboard</button>
         </div>
       </details>
     </div>
@@ -222,18 +266,23 @@
 </div>
 
 <script>
-function copyText(id, btn) {
-  const el = document.getElementById(id);
-  const text = el.innerText;
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'Copied!';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'Copy to clipboard';
-      btn.classList.remove('copied');
-    }, 2000);
+// Bind copy handlers from data attributes — no untrusted content reaches a JS string.
+document.querySelectorAll('.copy-btn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var targetId = btn.getAttribute('data-target');
+    if (!targetId) return;
+    var el = document.getElementById(targetId);
+    if (!el) return;
+    navigator.clipboard.writeText(el.innerText).then(function () {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function () {
+        btn.textContent = 'Copy to clipboard';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
   });
-}
+});
 </script>
 </body>
 </html>
