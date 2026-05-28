@@ -100,11 +100,37 @@ This repo is structured as a Claude Code plugin. Install it however you usually 
 plugins (e.g. via `/plugin` in Claude Code, or by cloning into your plugins directory):
 
 ```bash
-git clone https://github.com/[your-fork]/job-application-kit.git
+git clone https://github.com/BryanAJones/honest-apply.git
 ```
 
-If you're not using the plugin system, you can also just drop the `skills/job-application`
-and `skills/job-application-init` directories into `~/.claude/skills/` and they'll work.
+If you're not using the plugin system, you can also just drop the three `skills/*`
+directories into `~/.claude/skills/` and they'll work.
+
+## Compatibility
+
+**Primary target: Claude Code** (CLI, desktop app, IDE extensions, Cowork). The
+plugin format, auto-discovered skills, and trigger-phrase activation all assume
+Anthropic's Skills system.
+
+**Other harnesses — partial:** the *content* is portable (the SKILL files,
+templates, and reference docs are just markdown + HTML), but the *packaging*
+isn't. Other agentic tools don't have an equivalent of Claude's Skill
+auto-trigger, so the user has to point the agent at the files manually.
+
+| Harness | Status | How to use |
+|---|---|---|
+| Claude Code | First-class | Install as a plugin; skills auto-activate on trigger phrases. |
+| Cowork | First-class | Same as Claude Code — uses the same Skills system. |
+| Cursor | Workable | Copy `skills/job-application/SKILL.md` and the relevant references into `.cursor/rules/honest-apply.mdc` or `AGENTS.md` so they're always in context. Trigger by saying "use the honest-apply pipeline on this listing." No auto-activation. |
+| Codex CLI (OpenAI) | Workable | Point the agent at the SKILL files manually each session: `codex -p "Read skills/job-application/SKILL.md and skills/job-application/references/career-profile.md, then process this listing: <paste>"`. No persistent install. |
+| GitHub Copilot Chat | Workable, awkward | Paste the relevant SKILL content into `.github/copilot-instructions.md` for workspace-level always-on instructions. Lose the multi-skill structure (init / per-listing / daily); collapses to one big instruction blob. |
+| Windsurf, Continue, others | Workable | Same pattern as Cursor — wherever the harness loads persistent instructions, point it at the SKILL content. |
+
+**The hard dependency on Claude is the install, not the brain.** If you'd rather
+use a different harness, the pipeline still works — you'll just lose the
+trigger-phrase auto-activation and the scheduled-task walkthrough. Everything
+else (resume intake, fit filter, anti-slop, HTML output) is harness-agnostic
+because it's all prompt-level instruction.
 
 ## First-time setup (run once)
 
