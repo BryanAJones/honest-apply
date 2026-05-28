@@ -1,6 +1,6 @@
 {
   "name": "honest-apply",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Plug-and-play job application skill. One interview personalizes it to you; then it runs a fit-filter -> tailor -> anti-slop -> log pipeline on every listing you paste, or a batched daily flow that surfaces a filtered shortlist as an HTML review. Talks you OUT of bad-fit applications. Never auto-submits.",
   "author": "honest-apply contributors",
   "license": "MIT",

@@ -322,10 +322,111 @@ expect it to sharpen over the first 3-5 applications as hiring-manager reactions
    - Where the files were written (absolute paths).
    - That they should commit/back up `career-profile.md` — it's the single source of truth.
    - That they can edit it freely anytime; the skill always re-reads it.
-   - How to invoke the main skill: "Paste a job listing in any conversation and the
+   - How to invoke the per-listing skill: "Paste a job listing in any conversation and the
      `job-application` skill will activate."
 
-Do NOT auto-run the main skill in the same session. Setup is done.
+Then move to the scheduling step (below) — don't end yet.
+
+---
+
+## Section 6 — OPTIONAL: schedule the daily batch
+
+Ask the user:
+
+> "Files are written. One more thing: do you want to schedule the daily batch to run
+> automatically each morning, or trigger it manually for now? Manual is fine — you can
+> come back and set this up anytime."
+
+If they say "manual" or "later": tell them they can read
+`references/scheduling-setup.md` whenever they're ready. End the session.
+
+If they say "yes, schedule it": continue.
+
+### Ask which environment
+
+> "Which fits your setup?
+>
+> (a) **Windows Task Scheduler** — local, persistent, runs in your account
+> (b) **macOS / Linux cron** — same model, different OS
+> (c) **Cowork recurring task** — runs in your Cowork workspace (needs your
+>     profile uploaded there)
+> (d) **`/loop` in this session** — temporary, for testing the flow without
+>     a persistent schedule
+>
+> Note: Claude Code's `/schedule` is NOT a good fit — it creates remote agents
+> that can't read your local career-profile.md."
+
+### Branch by environment
+
+#### (a) Windows Task Scheduler
+
+1. Confirm the user's job-search folder path (it's the cwd they ran the init
+   skill from).
+2. Ask what time they want the daily run (default: 06:30).
+3. Write `daily-batch.bat` to the job-search folder with:
+   ```bat
+   @echo off
+   cd /d "<job-search-path>"
+   claude -p "Run my daily honest-apply batch"
+   ```
+4. Show the user the exact `schtasks` command that will register the task:
+   ```powershell
+   schtasks /create /tn "HonestApply Daily" /tr "<job-search-path>\daily-batch.bat" /sc daily /st <hh:mm> /f
+   ```
+5. Ask: "Want me to run this for you, or would you rather copy and run it
+   yourself?"
+6. If yes, run it via the shell with one confirmation. Verify success
+   (`schtasks /query /tn "HonestApply Daily"` should show it).
+7. Tell them: "Triggered manually once" — offer to run the task immediately to
+   verify the flow end-to-end. Confirm `daily-review.html` appeared.
+
+#### (b) macOS / Linux cron
+
+1. Confirm the job-search folder path and run time.
+2. Show the crontab line:
+   ```
+   <minute> <hour> * * * cd <job-search-path> && claude -p "Run my daily honest-apply batch"
+   ```
+3. Find the full `claude` path with `which claude` (cron has a minimal PATH —
+   include the full path if the binary isn't in `/usr/bin` or `/usr/local/bin`).
+4. Tell them to add the line via `crontab -e`. Don't try to edit crontab
+   automatically — that's the user's territory.
+5. Suggest a test: run the command manually from a shell first to confirm it
+   works before relying on cron.
+
+#### (c) Cowork recurring task
+
+This is UI-driven and can't be automated from a Claude Code session. Tell the
+user:
+
+1. Make sure `career-profile.md` is in a Cowork workspace folder (upload if
+   needed, or re-run the init skill inside Cowork).
+2. In Cowork, create a recurring task.
+3. Working directory: the folder with their profile.
+4. Prompt: `Run my daily honest-apply batch.`
+5. Schedule: daily, ~6-7 AM.
+
+Tell them to run the task once manually after setup to verify.
+
+#### (d) `/loop` for testing
+
+Invoke `/loop 24h Run my daily honest-apply batch` in the current session.
+Warn them: this doesn't persist across session close. Good for confirming the
+daily flow works for a day or two before committing to a real schedule.
+
+### Standing rules for this section
+
+- **Never execute the schedule-creation command silently.** Always show the
+  exact command first and ask for confirmation before running it.
+- **Never create scheduled tasks the user can't easily remove.** Use stable,
+  recognizable names ("HonestApply Daily") and tell the user how to delete the
+  task later.
+- **If a path contains spaces or special characters**, quote it correctly in
+  the batch file and the schtasks command — Windows pathing is finicky.
+- **If the user is on Windows but doesn't know their full username/path**,
+  resolve it from environment (`$env:USERPROFILE`) rather than guessing.
+
+Setup is done. Don't auto-run the main skill in the same session.
 
 ---
 

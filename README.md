@@ -71,14 +71,20 @@ You open the HTML, decide what to act on, and apply live yourself.
 
 **Scheduling Mode B:**
 
-- **Claude Code:** `/schedule` lets you set a cron-style recurring task. Create a
-  routine with the prompt `Run my daily honest-apply batch.` and set the working
-  directory to your job-search folder. Set it for ~6-7am if you want a queue
-  waiting when you start your day.
-- **Cowork:** set up a recurring task with the same prompt and working-directory
-  scope. **Honest limit:** scheduled Cowork agents reach only what unattended
-  fetch can pull — RSS/JSON feeds and static pages work, LinkedIn / Indeed / most
-  ATS pages don't. For hostile boards, open a supervised session.
+The init skill ends by offering to set up a schedule for you — Windows Task
+Scheduler, macOS/Linux cron, a Cowork recurring task, or a temporary `/loop`
+for testing. Pick "schedule it" at the end of the interview and it walks you
+through the right one for your setup, generates the wrapper script, and offers
+to register the task with one confirmation. You can also do this later — see
+`skills/job-application/references/scheduling-setup.md` for the same
+instructions in reference form.
+
+**Not** Claude Code's `/schedule` — that creates remote agents that can't read
+your local `career-profile.md`. The kit explicitly avoids it.
+
+**Honest limit:** scheduled unattended runs reach only what fetch tools can
+pull without a login — RSS/JSON feeds and static pages work, LinkedIn / Indeed /
+most ATS pages don't. For hostile boards, open a supervised session.
 
 **Search tools the kit needs (not bundled):**
 
@@ -151,6 +157,9 @@ Inside `skills/job-application/references/`:
 - **`daily-batch-workflow.md`** — the per-phase logic the daily skill executes.
 - **`job-scan-spec.md`** — reconnaissance (which boards are fetchable), search-tool
   selection, honest limits.
+- **`scheduling-setup.md`** — Task Scheduler, cron, Cowork, and `/loop` setup
+  instructions for the daily batch. The init skill walks through these
+  interactively; this is the same content in reference form.
 - **`daily-review-template.html`** — the structural template for the HTML review.
 - **`browser-fill-workflow.md`** — drive a real Chrome to fill application forms,
   stop before submit, never enter sensitive data.
