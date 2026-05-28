@@ -13,14 +13,15 @@ bad-fit application — is a success, not a failure.
 
 ## What's in the box
 
-Two skills:
+Three skills:
 
-- **`job-application-init`** — one-time onboarding interview. Asks you ~30 minutes of
-  questions across five sections (targeting spec, claims ledger, asset inventory, writing
-  style, cover letter spine) and writes `career-profile.md` into your working directory. It
-  pushes back on vague or inflated answers — that's the feature.
-- **`job-application`** — the runtime. Paste a job listing in any conversation, it runs
-  the pipeline:
+- **`job-application-init`** — one-time onboarding interview. Starts by reading your
+  resume, then asks ~30 minutes of questions across five sections (targeting spec,
+  claims ledger, asset inventory, writing style, cover letter spine). Writes
+  `career-profile.md` into your working directory. It pushes back on vague or inflated
+  answers — that's the feature.
+- **`job-application`** — the per-listing runtime. Paste a job listing in any
+  conversation, it runs the pipeline:
   1. **Fit filter** — scores APPLY / SKIP / STRETCH, names the single most likely reason
      this posting's screener would pass on you.
   2. **Tailor** — only if the role passes, drafts resume bullets and/or cover letter
@@ -28,8 +29,64 @@ Two skills:
   3. **Anti-slop check** — copy-paste survival test, banned phrases scan, anti-AI
      structural tells. Runs before you ever see the draft.
   4. **Log** — appends a row to `tracker.csv`.
+- **`job-application-daily`** — the batched daily flow. Searches the job boards in
+  your targeting spec, filters every listing, drafts materials for the passes,
+  renders an HTML review document (`daily-review.html`) in your cwd, and logs
+  each role. Designed to run manually each morning or on a schedule via Claude
+  Code's `/schedule` or a Cowork recurring task.
 
 It never auto-submits. You review everything.
+
+## Workflow modes
+
+There are two ways to use the kit. Pick whichever fits your job-search rhythm:
+
+### Mode A — Per-listing (the simplest)
+
+You're browsing jobs yourself. When you find one that looks worth it, paste it into
+Claude Code:
+
+> *Here's a role: [paste]. Should I apply?*
+
+The `job-application` skill runs the pipeline and either talks you out of it (SKIP)
+or drafts materials and logs a tracker row. Closest to a normal Claude conversation.
+Good when you're already in the habit of browsing and just want a smarter filter +
+draft helper.
+
+### Mode B — Daily batch (the volume mode)
+
+You want filtered listings *found for you* and pre-drafted. Open a session in your
+job-search folder and say:
+
+> *Run my daily honest-apply batch.*
+
+The `job-application-daily` skill searches your target boards using whatever search
+tools the host environment provides (`WebSearch`, `WebFetch`, Firecrawl, Chrome
+DevTools / Playwright MCP, etc.), filters every listing through the fit filter,
+drafts the passes, and renders `daily-review.html` — a visual review page with
+verdict cards, copy-to-clipboard cover letters, and a "skipped today" list with
+reasons.
+
+You open the HTML, decide what to act on, and apply live yourself.
+
+**Scheduling Mode B:**
+
+- **Claude Code:** `/schedule` lets you set a cron-style recurring task. Create a
+  routine with the prompt `Run my daily honest-apply batch.` and set the working
+  directory to your job-search folder. Set it for ~6-7am if you want a queue
+  waiting when you start your day.
+- **Cowork:** set up a recurring task with the same prompt and working-directory
+  scope. **Honest limit:** scheduled Cowork agents reach only what unattended
+  fetch can pull — RSS/JSON feeds and static pages work, LinkedIn / Indeed / most
+  ATS pages don't. For hostile boards, open a supervised session.
+
+**Search tools the kit needs (not bundled):**
+
+The kit uses whatever's in the host environment. It does NOT ship its own. You
+need at least one of: `WebSearch`/`WebFetch` (built into Claude Code), Firecrawl
+skills (resilient extraction), or a browser MCP (Chrome DevTools, Playwright)
+for supervised sessions on hostile boards. If nothing is available, the daily
+skill stops cleanly and tells you instead of fabricating listings.
 
 ## Install
 
@@ -79,15 +136,26 @@ The `job-application` skill will activate, run the pipeline, and either:
 You can also ask for just one piece ("just the cover letter," "just bullets," "filter only,
 no draft").
 
-## Optional workflows
+## See an example
+
+`examples/career-profile.example.md` — a fictional finished profile (Maya Chen, a
+backend engineer doing a lateral move into dev-tools). Shows what a completed
+profile looks like and how the lateral-move branch of the Cover Letter Spine plays
+out. Don't copy it verbatim — your interview will produce something different
+because it pushes on YOUR resume and YOUR situation.
+
+## Reference docs (for the curious)
 
 Inside `skills/job-application/references/`:
 
-- **`daily-batch-workflow.md`** — process many listings in one session and queue for review.
-- **`job-scan-spec.md`** — schedule a recurring scan over fetchable job boards. Honest
-  about what won't work unattended (LinkedIn, Indeed, most ATS pages).
-- **`browser-fill-workflow.md`** — drive a real Chrome to fill application forms, stop
-  before submit, never enter sensitive data.
+- **`daily-batch-workflow.md`** — the per-phase logic the daily skill executes.
+- **`job-scan-spec.md`** — reconnaissance (which boards are fetchable), search-tool
+  selection, honest limits.
+- **`daily-review-template.html`** — the structural template for the HTML review.
+- **`browser-fill-workflow.md`** — drive a real Chrome to fill application forms,
+  stop before submit, never enter sensitive data.
+- **`writing-style-defaults.md`** — universal anti-slop and anti-AI-tells rules.
+- **`PROFILE-TEMPLATE.md`** — the skeleton the init skill fills in.
 
 ## Honest limits
 

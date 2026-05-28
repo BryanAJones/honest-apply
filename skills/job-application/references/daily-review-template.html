@@ -1,0 +1,239 @@
+<!--
+  Daily Review Template — honest-apply
+
+  Structural template for the daily batch flow. The job-application-daily skill
+  populates the placeholders below and writes the result as `daily-review.html`
+  in the user's working directory.
+
+  Placeholders use {{double_braces}}. Repeating sections are marked with
+  {{#each ...}} ... {{/each}} for clarity — the agent expands them manually
+  (this is not a real template engine; the agent just substitutes the data).
+
+  Card colors:
+    - APPLY    -> .apply    (green verdict bar, .badge-apply badge)
+    - STRETCH  -> .stretch  (amber verdict bar, .badge-stretch badge)
+    - SKIP roles do NOT get a card — they go in the skipped-list at the bottom.
+
+  Delete any section that doesn't apply (e.g. "Previously Drafted" can be empty
+  for first-time users). Keep the footer note exactly as written — the
+  "never submitted on your behalf" line is part of the kit's safety contract.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Queue — {{date_iso}}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f5f7; color: #1a1a2e; line-height: 1.6; }
+  .header { background: #1a1a2e; color: #fff; padding: 24px 32px; }
+  .header h1 { font-size: 1.4rem; font-weight: 600; margin-bottom: 6px; }
+  .stats { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 12px; }
+  .stat { background: rgba(255,255,255,0.12); border-radius: 6px; padding: 6px 14px; font-size: 0.85rem; }
+  .stat span { font-weight: 700; }
+  .market-note { background: #fff3cd; border-left: 4px solid #f0ad4e; padding: 12px 16px; margin: 20px 32px; border-radius: 4px; font-size: 0.88rem; color: #664d03; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px 32px 60px; }
+  .card { background: #fff; border-radius: 10px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
+  .card-header { display: flex; align-items: flex-start; padding: 20px 24px 14px; gap: 14px; }
+  .verdict-bar { width: 5px; border-radius: 3px; flex-shrink: 0; align-self: stretch; min-height: 40px; }
+  .stretch .verdict-bar { background: #f0ad4e; }
+  .apply .verdict-bar { background: #28a745; }
+  .card-title { flex: 1; }
+  .company { font-size: 0.8rem; font-weight: 600; color: #6c757d; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .role { font-size: 1.2rem; font-weight: 700; color: #1a1a2e; }
+  .badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .badge { font-size: 0.75rem; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+  .badge-stretch { background: #fff3cd; color: #92640a; border: 1px solid #f0ad4e; }
+  .badge-apply { background: #d4edda; color: #155724; border: 1px solid #28a745; }
+  .badge-salary { background: #e8f4fd; color: #0c5460; border: 1px solid #bee5eb; }
+  .badge-salary-warn { background: #fff3cd; color: #664d03; border: 1px solid #f0ad4e; }
+  .badge-method { background: #f3e8ff; color: #6f2da8; border: 1px solid #d0a0f0; }
+  .rejection-box { margin: 0 24px 14px; background: #fff5f5; border: 1px solid #f5c6cb; border-radius: 6px; padding: 10px 14px; font-size: 0.87rem; }
+  .rejection-box strong { color: #842029; display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .tension-box { margin: 0 24px 14px; background: #fff3cd; border: 1px solid #f0ad4e; border-radius: 6px; padding: 10px 14px; font-size: 0.87rem; }
+  .tension-box strong { color: #664d03; display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .flag-box { margin: 0 24px 14px; background: #fff8e1; border: 1px solid #ffca28; border-radius: 6px; padding: 10px 14px; font-size: 0.87rem; color: #5d4037; }
+  .fit-box { margin: 0 24px 14px; background: #f0f9ff; border: 1px solid #bee5eb; border-radius: 6px; padding: 10px 14px; font-size: 0.87rem; }
+  .fit-box strong { color: #0c5460; display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .apply-row { margin: 0 24px 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .btn-apply { display: inline-block; background: #1a1a2e; color: #fff; text-decoration: none; padding: 9px 20px; border-radius: 6px; font-size: 0.87rem; font-weight: 600; }
+  .btn-apply:hover { background: #2d2d4a; }
+  .collapsibles { margin: 0 24px 20px; }
+  details { border: 1px solid #e9ecef; border-radius: 6px; margin-bottom: 10px; }
+  details summary { padding: 10px 14px; cursor: pointer; font-size: 0.88rem; font-weight: 600; color: #495057; user-select: none; list-style: none; display: flex; align-items: center; gap: 8px; }
+  details summary::before { content: '\25B6'; font-size: 0.7rem; transition: transform 0.15s; }
+  details[open] summary::before { transform: rotate(90deg); }
+  details summary::-webkit-details-marker { display: none; }
+  .detail-content { padding: 14px 16px; border-top: 1px solid #e9ecef; font-size: 0.88rem; line-height: 1.7; }
+  .detail-content ul { padding-left: 20px; }
+  .detail-content ul li { margin-bottom: 8px; }
+  .cover-text { white-space: pre-wrap; font-family: inherit; }
+  .copy-btn { display: inline-block; margin-top: 12px; padding: 6px 14px; font-size: 0.8rem; background: #e9ecef; border: none; border-radius: 4px; cursor: pointer; color: #495057; font-weight: 600; }
+  .copy-btn:hover { background: #dee2e6; }
+  .copy-btn.copied { background: #d4edda; color: #155724; }
+  .section-label { font-size: 0.8rem; font-weight: 700; color: #6c757d; text-transform: uppercase; letter-spacing: 0.07em; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e9ecef; }
+  .prev-card { background: #fff; border-radius: 8px; padding: 14px 18px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); display: flex; align-items: flex-start; gap: 14px; font-size: 0.87rem; }
+  .prev-dot { width: 10px; height: 10px; border-radius: 50%; background: #f0ad4e; flex-shrink: 0; margin-top: 5px; }
+  .prev-co { font-weight: 700; color: #1a1a2e; }
+  .prev-date { font-size: 0.78rem; color: #adb5bd; margin-top: 2px; }
+  .prev-note { color: #6c757d; margin-top: 4px; }
+  .skipped-section { margin-top: 32px; }
+  .skipped-section h2 { font-size: 1rem; font-weight: 700; color: #6c757d; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .skipped-list { background: #fff; border-radius: 8px; padding: 16px 20px; }
+  .skipped-item { display: flex; gap: 12px; padding: 6px 0; border-bottom: 1px solid #f1f3f5; font-size: 0.86rem; }
+  .skipped-item:last-child { border-bottom: none; }
+  .skip-co { font-weight: 600; min-width: 200px; color: #495057; }
+  .skip-reason { color: #6c757d; }
+  .footer-note { margin-top: 40px; padding: 14px 20px; background: #e9ecef; border-radius: 6px; font-size: 0.82rem; color: #6c757d; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Daily Application Queue &mdash; {{date_human}}</h1>
+  <div class="stats">
+    <div class="stat">Searched <span>{{count_searched}}</span> listings</div>
+    <div class="stat">Passed filter <span>{{count_passed}}</span></div>
+    <div class="stat">APPLY <span>{{count_apply}}</span></div>
+    <div class="stat">STRETCH <span>{{count_stretch}}</span></div>
+  </div>
+</div>
+
+{{#if market_note}}
+<div class="market-note">
+  <strong>Market signal:</strong> {{market_note_text}}
+</div>
+{{/if}}
+
+<div class="container">
+
+  {{#each passing_roles}}
+  <!-- CARD: {{company}} -->
+  <div class="card {{verdict_lower}}">
+    <div class="card-header">
+      <div class="verdict-bar"></div>
+      <div class="card-title">
+        <div class="company">{{company}} &middot; {{industry}} &middot; {{location}}</div>
+        <div class="role">{{role_title}}</div>
+        <div class="badges">
+          <span class="badge badge-{{verdict_lower}}">{{verdict}}</span>
+          <span class="badge {{salary_badge_class}}">{{salary_badge_text}}</span>
+          <span class="badge badge-method">{{apply_method}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rejection-box">
+      <strong>Rejection risk</strong>
+      {{rejection_reason}}
+    </div>
+
+    {{#if tension_flag}}
+    <div class="tension-box">
+      <strong>&#9888; {{tension_flag_title}}</strong>
+      {{tension_flag_text}}
+    </div>
+    {{/if}}
+
+    {{#if posting_flag}}
+    <div class="flag-box">
+      &#9888; {{posting_flag_text}}
+    </div>
+    {{/if}}
+
+    <div class="fit-box">
+      <strong>Fit asset</strong>
+      {{fit_evidence}}
+    </div>
+
+    <div class="apply-row">
+      <a class="btn-apply" href="{{apply_url}}" target="_blank" rel="noopener">Open Application &#8599;</a>
+      <span style="font-size:0.82rem;color:#6c757d;">{{posting_meta}}</span>
+    </div>
+
+    <div class="collapsibles">
+      <details>
+        <summary>Resume Bullets ({{bullet_count}})</summary>
+        <div class="detail-content">
+          <ul>
+            {{#each resume_bullets}}
+            <li>{{this}}</li>
+            {{/each}}
+          </ul>
+        </div>
+      </details>
+
+      <details>
+        <summary>Cover Letter</summary>
+        <div class="detail-content">
+          <div class="cover-text" id="cover-{{slug}}">{{cover_letter_text}}</div>
+          <button class="copy-btn" onclick="copyText('cover-{{slug}}', this)">Copy to clipboard</button>
+        </div>
+      </details>
+    </div>
+  </div>
+  {{/each}}
+
+  {{#if has_previous}}
+  <!-- PREVIOUSLY DRAFTED -->
+  <div class="section-label">Previously Drafted &mdash; Active in Pipeline</div>
+
+  {{#each previously_drafted}}
+  <div class="prev-card">
+    <div class="prev-dot"></div>
+    <div>
+      <div class="prev-co">{{company}} &mdash; {{role_title}}</div>
+      <div class="prev-date">Drafted {{date_drafted}} &middot; Follow-up {{date_followup}}</div>
+      <div class="prev-note">{{notes}}</div>
+    </div>
+  </div>
+  {{/each}}
+  {{/if}}
+
+  {{#if has_skipped}}
+  <!-- SKIPPED -->
+  <div class="skipped-section">
+    <h2>Skipped Today ({{count_skipped}})</h2>
+    <div class="skipped-list">
+      {{#each skipped_roles}}
+      <div class="skipped-item"><span class="skip-co">{{company}} &mdash; {{role_title}}</span><span class="skip-reason">{{skip_reason}}</span></div>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{#if untrusted_sources}}
+  <!-- BOARDS THAT REQUIRE A SUPERVISED SESSION -->
+  <div class="skipped-section">
+    <h2>Not Searched (Login Wall / JS-Rendered)</h2>
+    <div class="skipped-list">
+      {{#each untrusted_sources}}
+      <div class="skipped-item"><span class="skip-co">{{name}}</span><span class="skip-reason">{{reason}} &mdash; open in a supervised browser session</span></div>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  <div class="footer-note">
+    Automated run &mdash; {{date_iso}}. You apply manually. Never submitted on your behalf.
+  </div>
+
+</div>
+
+<script>
+function copyText(id, btn) {
+  const el = document.getElementById(id);
+  const text = el.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy to clipboard';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+</script>
+</body>
+</html>

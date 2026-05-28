@@ -36,22 +36,27 @@ blank and flag:
 Run the ANTI-SLOP CHECK from SKILL.md before queuing.
 
 ### 4. QUEUE for review
-Assemble a review batch. Do not submit anything.
 
-## Daily review session format
+Render the queue as `daily-review.html` in the user's cwd, using
+`daily-review-template.html` as the structural template. The HTML view shows each
+passing role as a card (verdict badge, rejection risk, fit asset, apply button,
+collapsible bullets + cover letter with copy-to-clipboard), plus a "Previously
+Drafted — Active in Pipeline" section (read from prior tracker rows) and a
+"Skipped Today" list with one-line reasons.
 
-Present the queue as a compact list. For EACH application, show:
+If HTML output isn't appropriate (e.g. the user explicitly asked for inline text),
+fall back to a compact text list with the same fields per role:
 
 1. **Role + company** — one line
-2. **Fit verdict + most likely rejection reason** — so the user decides if it's worth their
-   click
+2. **Fit verdict + most likely rejection reason** — so the user decides if it's worth
+   their click
 3. **The draft** — materials, with anti-slop status noted
-4. **What's pre-filled vs. what still needs the user** — explicitly list the fields THEY
-   must complete (sensitive data, terms acceptance) and the final submit
+4. **What's pre-filled vs. what still needs the user** — explicitly list the fields
+   THEY must complete (sensitive data, terms acceptance) and the final submit
 5. **Options:** approve (user submits) / edit / skip
 
-Keep it scannable. Lead each with the rejection reason — that's the fastest signal for
-where to spend attention.
+Whichever format, lead each role with the rejection reason — that's the fastest signal
+for where to spend attention. Do not submit anything.
 
 ## Standing rules
 

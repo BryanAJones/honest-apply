@@ -40,6 +40,25 @@ login wall or a JS-only blank shell). Keep only the passing sources.
 Record pass/fail per source. The scan runs ONLY over the passers. For hostile sources, fall
 back to the user opening them in a browser they control.
 
+## Step 0.5 — What search tools the kit relies on
+
+The kit does **not** ship its own web search. It uses whatever search/fetch tools the
+host environment provides:
+
+- **Claude Code:** `WebSearch` and `WebFetch` are built in. Many users also have
+  Firecrawl skills (`firecrawl-search`, `firecrawl-scrape`, `firecrawl-crawl`) for
+  resilient extraction, or Chrome DevTools / Playwright MCP for supervised sessions
+  on hostile boards.
+- **Cowork or similar agent envs:** typically expose `web_fetch` and `WebSearch`;
+  some have integrated browsers.
+- **No search tools available?** Tell the user and stop. Don't fabricate listings.
+
+When multiple tools exist, prefer the most resilient option for each board:
+- RSS/JSON feeds (We Work Remotely, Remotive) -> plain `WebFetch`
+- Static HTML pages -> `WebFetch` or `firecrawl-scrape`
+- JS-rendered pages with anti-bot defenses -> `firecrawl-scrape` with rendering, or
+  defer to a supervised browser session
+
 ## Step 1 — Fetch
 
 Pull current postings from verified-fetchable sources only.
