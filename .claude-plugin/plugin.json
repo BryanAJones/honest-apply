@@ -1,0 +1,11 @@
+{
+  "name": "honest-apply",
+  "version": "0.1.0",
+  "description": "Plug-and-play job application skill. One interview personalizes it to you; then it runs a fit-filter -> tailor -> anti-slop -> log pipeline on every listing you paste. Talks you OUT of bad-fit applications. Never auto-submits.",
+  "author": "job-application-kit contributors",
+  "license": "MIT",
+  "skills": [
+    "skills/job-application",
+    "skills/job-application-init"
+  ]
+}
