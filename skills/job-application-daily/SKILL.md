@@ -29,8 +29,27 @@ If `career-profile.md` doesn't exist in the cwd, stop and tell the user to run
 
 ### Phase 1 — SOURCE
 
-Search the boards listed in the user's Targeting Spec, using whatever search tools the
-host environment provides:
+Source from **three** kinds of locations, in this order:
+
+**(a) Aggregator boards** from the user's Targeting Spec (BuiltIn, Wellfound,
+Remotive, LinkedIn if fetchable in this environment, etc.). Use the priority order
+the user set.
+
+**(b) Google Jobs** as a backstop for the syndication problem — many roles never
+hit aggregator boards because employers don't syndicate Workday/Greenhouse/Lever
+listings. Run a Google Jobs query each day:
+`https://www.google.com/search?q=<role+keywords>+remote&ibp=htl;jobs`. Vary the
+keyword combinations across runs to surface different slices (e.g. one day
+"associate product manager edtech," next day "product owner remote $120k"). The
+query template lives in the user's profile.
+
+**(c) Target employer watchlist** from the user's profile. Visit each listed
+career-page URL directly (`boards.greenhouse.io/<co>`,
+`<co>.wd1.myworkdayjobs.com`, etc.) and pull current postings. Apply the same fit
+filter to whatever shows up. These are companies the user specifically cares
+about and that may never appear on aggregators.
+
+For each source, use whatever search tools the host environment provides:
 
 - **Claude Code** ships with `WebSearch` and `WebFetch`. Many users also have
   Firecrawl skills (`firecrawl-search`, `firecrawl-scrape`, `firecrawl-crawl`) or
@@ -40,12 +59,16 @@ host environment provides:
 - **The kit does NOT ship its own search tools.** Use what's available. If nothing is
   available, tell the user and stop — don't fabricate listings.
 
-For each search, prefer the user's priority-ordered boards from the Targeting Spec.
-Pull a candidate set of 15-30 listings. Capture for each: title, company, listed
-salary band (if any), location/remote policy, posting date, direct apply link, and
-the full job description text (not just a summary).
+**Indeed is excluded by default** — consistently bot-wary for unattended fetch.
+If the user's profile explicitly opted it in, attempt fetch; if it fails, note
+and continue rather than spending the budget on retries.
 
-Flag boards that returned a login wall or blank shell — those need to be opened by
+Pull a candidate set of 15-30 listings across all three source types. Capture for
+each: title, company, listed salary band (if any), location/remote policy, posting
+date, direct apply link, source (which board / watchlist URL / Google Jobs query),
+and the full job description text (not just a summary).
+
+Flag sources that returned a login wall or blank shell — those need to be opened by
 the user, not the agent. Note them so the user knows what's NOT in the batch.
 
 ### Phase 2 — FILTER (ruthless)

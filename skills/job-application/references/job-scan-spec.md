@@ -21,6 +21,23 @@ the fit filter -> surface ONLY the short list. Volume in, ruthless cut, a few it
 
 ---
 
+## The syndication problem (read first)
+
+Many companies — especially mid-sized and larger orgs running Workday, Greenhouse,
+or Lever — do not syndicate their roles to aggregator boards (BuiltIn, LinkedIn,
+Remotive, etc.). If the scan only checks aggregators, those roles never appear.
+Two countermeasures, both used:
+
+1. **Google Jobs as a backstop.** Google indexes ATS pages directly. A query like
+   `https://www.google.com/search?q=<role+keywords>+remote&ibp=htl;jobs` surfaces
+   Workday/Greenhouse/Lever roles that aggregators miss. Vary the query terms
+   across runs to surface different slices. Include Google Jobs in every daily
+   scan.
+2. **Target employer watchlist.** The user's career profile may list specific
+   companies to check directly (e.g. `boards.greenhouse.io/<co>`,
+   `<co>.wd1.myworkdayjobs.com`). Visit each of those pages on every run and
+   apply the same fit filter to whatever's listed.
+
 ## Step 0 — Reconnaissance (do this first)
 
 Test which sources actually return real listing content to an unattended fetch (not a
@@ -31,11 +48,17 @@ login wall or a JS-only blank shell). Keep only the passing sources.
   RSS/JSON)
 - ATS aggregators that index company career pages
 - Industry-specific job boards relevant to the user's Targeting Spec
+- Google Jobs (`google.com/search?...&ibp=htl;jobs`) — usually fetchable; varies
+- Direct ATS pages from the user's target employer watchlist (Greenhouse and Lever
+  often work unattended; Workday is more variable — needs per-instance testing)
 
 **Candidate sources (often hostile to unattended fetch):**
 - LinkedIn (login wall, anti-bot)
-- Indeed (anti-bot)
-- Most Workday / Greenhouse-rendered listing pages (JS-rendered)
+- **Indeed** (anti-bot — confirmed unreliable for automated fetching; default-exclude
+  unless the user explicitly opts in and accepts they may need supervised sessions)
+- Some Workday instances (JS-rendered, anti-bot)
+- Greenhouse pages with heavy JS rendering — most work with `firecrawl-scrape`,
+  some don't
 
 Record pass/fail per source. The scan runs ONLY over the passers. For hostile sources, fall
 back to the user opening them in a browser they control.

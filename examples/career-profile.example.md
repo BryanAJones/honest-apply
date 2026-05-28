@@ -25,6 +25,15 @@
   3. Hacker News "Who's Hiring" monthly thread
   4. Console.dev jobs
   5. LinkedIn (last resort)
+  - **Google Jobs backstop:** `https://www.google.com/search?q=senior+backend+engineer+dev+tools+remote&ibp=htl;jobs` (vary across runs)
+  - **Excluded:** Indeed (bot-wary; not worth the retries)
+- **Target employer watchlist** — check these directly each run:
+  - Linear — `jobs.ashbyhq.com/linear`
+  - Vercel — `boards.greenhouse.io/vercel`
+  - Temporal — `boards.greenhouse.io/temporal`
+  - Supabase — `jobs.ashbyhq.com/supabase`
+  - Render — `boards.greenhouse.io/render`
+  - PostHog — `posthog.com/careers` (resolve ATS at fetch time)
 - **Additional hard blocks:** No agency/contract. No Java-heavy stacks.
 - **Tension flags to watch:** Salary floor + non-Staff seniority is achievable in
   dev-tools but the band is tight — many Sr SWE listings at this seniority cap

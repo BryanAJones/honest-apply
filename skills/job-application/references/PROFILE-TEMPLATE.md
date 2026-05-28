@@ -26,6 +26,20 @@
   1. [board]
   2. [board]
   3. [...]
+  - **Google Jobs as a backstop:** include a query pattern like
+    `https://www.google.com/search?q=<role+keywords>+remote&ibp=htl;jobs` —
+    catches Workday/Greenhouse/Lever roles employers don't syndicate to
+    aggregators. Vary the query terms across runs.
+  - **Excluded boards (known hostile to unattended fetch):** [list, e.g. "Indeed
+    — consistently blocks automated fetching"]
+- **Target employer watchlist** — specific companies whose career pages should be
+  checked directly each run, regardless of aggregator coverage. Use this for
+  companies that use Workday / Greenhouse / Lever and often don't syndicate.
+  Apply the same hard filters to every listing on these pages.
+  - [Company name] — [direct career-page URL, e.g. `boards.greenhouse.io/<co>` or
+    `<co>.wd1.myworkdayjobs.com`]
+  - [Company name] — [direct URL]
+  - [...]
 - **Additional hard blocks:** [any user-specified auto-SKIP rules]
 - **Tension flags to watch:** [any conflicts the user named, e.g. "salary floor forces title
   above tenure window" — main skill will name these when they appear]

@@ -142,9 +142,23 @@ Ask, in this order, one or two questions per turn (don't dump the whole list):
    If they hesitate, prompt: "There's no wrong answer here, but you'll save time if listings
    below the number get filtered out before you read them."
 7. **Job boards.** "Which job boards do you want searches to prioritize?" Default options:
-   LinkedIn, Indeed, BuiltIn, Wellfound (AngelList), Remotive, We Work Remotely, Remote OK,
-   YC Work at a Startup, plus any industry-specific ones they name.
-8. **Hard blocks.** "Any other auto-SKIP rules? Examples: equity-only comp, agency/contract,
+   LinkedIn, BuiltIn, Wellfound (AngelList), Remotive, We Work Remotely, Remote OK,
+   YC Work at a Startup, plus any industry-specific ones they name. **Default-exclude
+   Indeed** — it's consistently bot-wary for unattended fetch; mention this and let
+   the user override if they want it in.
+   - Always add Google Jobs as a backstop: it surfaces Workday / Greenhouse / Lever
+     roles employers don't syndicate to aggregator boards. Record the query pattern
+     (e.g. `https://www.google.com/search?q=<role+keywords>+remote&ibp=htl;jobs`) in
+     the profile. Tell the user the query terms will get varied across runs.
+8. **Target employer watchlist.** "Are there specific companies you want the agent to
+   check directly every run, regardless of whether their roles hit the aggregator
+   boards?" Many companies use Workday / Greenhouse / Lever and never syndicate.
+   Capture the direct career-page URL for each (e.g. `boards.greenhouse.io/<co>` or
+   `<co>.wd1.myworkdayjobs.com`). If they don't know which boards a company uses,
+   ask for the company's careers page URL — the daily skill will resolve the ATS.
+   Tell them this is a strong move when they have a specific company in mind:
+   "their roles will get checked daily even if no aggregator picks them up."
+9. **Hard blocks.** "Any other auto-SKIP rules? Examples: equity-only comp, agency/contract,
    night shifts, on-site outside a region, specific industries you won't work in." Capture
    anything.
 
