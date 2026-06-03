@@ -55,13 +55,30 @@ Check if `career-profile.md` already exists in the working directory.
 - **If it doesn't exist:** Proceed.
 
 Tell the user, in 2-3 sentences, what's about to happen: a ~15-30 minute conversation that
-starts with their current resume and then probes across five sections; you'll push back on
+starts with their current resume and then probes across the sections below; you'll push back on
 vague or inflated claims; at the end they get a `career-profile.md` they should keep and
-edit over time. Then begin Section 0.
+edit over time. Then ask the track fork, then begin Section 0.
 
 ---
 
-## The interview — six sections, in order
+## Track fork (ask this FIRST, before Section 0)
+
+> "Are you setting up for **employment** (full-time / contract jobs), **freelance** (gig work on
+> Upwork / Contra / Wellfound / fractional boards), or **both**?"
+
+Routing:
+- **Employment** → run Sections 0-5 as written. Skip the Freelance Interview.
+- **Freelance** → run the *shared* sections (0 Resume, 2 Claims Ledger, 3 Asset Inventory,
+  4 Writing Style) PLUS the **Freelance Interview** below. Skip Section 1 (employment Targeting
+  Spec) and Section 5 (Cover Letter Spine) — the freelance track has its own Targeting Spec and
+  uses a **Proposal Spine** instead.
+- **Both** → run everything: Sections 0-5 AND the Freelance Interview.
+
+Record the track; the file-writing step renders the matching template sections.
+
+---
+
+## The interview — sections in order
 
 ### Section 0 — RESUME INTAKE (do this first — it sharpens every question that follows)
 
@@ -334,17 +351,83 @@ expect it to sharpen over the first 3-5 applications as hiring-manager reactions
 
 ---
 
+## FREELANCE INTERVIEW — run only if the track is "freelance" or "both"
+
+Goal: collect the raw material the freelance track needs. This *gathers facts* — it does NOT
+write the publishable profile copy or the platform recommendation; those are produced later by
+the separate `job-application-profile` step (it reads what you record here). Apply the same
+pushback discipline as the rest of the interview. Fill template Sections 4-7 (and seed 8).
+
+### F1 — Services & rates (template §4)
+- "What services are you actually selling? For each, what's the rate model — hourly, fixed-price,
+  or a project minimum — and the number?" Push for services they can defend, not a wish list.
+- "What's your hard rate floor — the number below which a gig is auto-SKIP?"
+- "Which platforms are you targeting?" (Point to `references/platform-economics.md` for the
+  menu + cost-to-apply models. Don't pick for them, but flag obvious mismatches.)
+
+### F2 — Cold-start (template §4)
+After the rate floor, ask directly and explain WHY: "Are you brand new on these platforms with
+no reviews / no Job Success Score? If so, **cold-start mode** relaxes your rate floor for your
+first N *won* gigs, so the filter doesn't kill the underpriced early bids that build a
+reputation. It's a deliberate 'lower pay now to buy reviews' trade — every cold-start bid is
+labeled as such. Want it on? For how many gigs (default 5)?" Record `cold_start {enabled, N}`.
+Skip if they already have an established profile/JSS.
+
+### F3 — Proof Ledger (template §6) — the honesty-critical section
+For each linkable piece of proof (per service), capture ALL FOUR honesty fields — push back hard,
+this is where overclaiming happens:
+1. **Link / media** — public URL, repo, screenshots, or describe-only.
+2. **Solo or team (+ your slice)** — if team, the specific piece they owned. Never "I built it"
+   for a team project.
+3. **Maturity / traction** — prototype / deployed-no-users / live-with-users / shipped-at-scale.
+4. **Demonstrable level** — working-demo / public-code / design-screenshots-only / describe-only.
+5. **IP sensitivity** — public-ok / keep-private. Ask before assuming a commercial repo should be
+   public; don't push them to expose IP for portfolio cred.
+> Verify-before-cite: if a link is the proof, confirm it loads well for a stranger (not
+> login-walled/empty/erroring) and uses the project's current name.
+
+### F4 — Portfolio projects for the Profile Pack (template §5)
+The presentable view of the Proof Ledger. For each headline project: title, the client-facing
+problem, the user's slice, an honest outcome (≤ the maturity tag — never imply "live/users" for
+a pre-alpha), and what can be shown. The `job-application-profile` step renders these per platform.
+
+### F5 — Proposal Spine (template §7)
+Draft the per-gig anchor: client's problem → one line of proof + link → scope/approach →
+price + timeline → one sharp question. Short. If they're new with no reviews / thin proof,
+**default to offering a small paid trial** ("let me do a slice for $X first") — proving by doing
+beats overselling. Note: this replaces the Cover Letter Spine for the freelance track.
+
+> Fill the Profile Pack **source** (§5) with the neutral material you collected above. Leave only
+> the **Platform Plan** (§8) as a `[generated by job-application-profile]` placeholder — that step
+> produces the platform plan AND the published per-platform copy (into `freelance-profiles.md`),
+> not here.
+
+---
+
 ## After the interview: write the files
 
 1. Render `career-profile.md` using the structure in `references/PROFILE-TEMPLATE.md` from
-   this plugin (read it, fill it in with the user's answers, write to the cwd).
+   this plugin (read it, fill it in with the user's answers, write to the cwd). Render the
+   sections that match the chosen track:
+   - **Employment / both:** Sections 0-3 (Targeting Spec, Asset Inventory, Claims Ledger,
+     Writing Style) + Cover Letter Spine.
+   - **Freelance / both:** the shared sections PLUS Freelance Track Sections 4-7 — **fill** the
+     Freelance Targeting Spec (§4), the **Profile Pack *source*** (§5, the neutral positioning /
+     overview / rate card / portfolio projects you collected), the Proof Ledger (§6), and the
+     Proposal Spine (§7). Leave only **§8 Platform Plan** as `[generated by job-application-profile]`.
+     The *published, per-platform* profile copy is also generated by that step (into
+     `freelance-profiles.md`) — it does NOT go in §5, which holds the platform-neutral source.
 2. Write `tracker.csv` using `references/tracker-template.csv` (just the header).
 3. Tell the user:
    - Where the files were written (absolute paths).
    - That they should commit/back up `career-profile.md` — it's the single source of truth.
    - That they can edit it freely anytime; the skill always re-reads it.
-   - How to invoke the per-listing skill: "Paste a job listing in any conversation and the
-     `job-application` skill will activate."
+   - **Employment:** "Paste a job listing in any conversation and the `job-application` skill
+     will activate."
+   - **Freelance:** "Next, run the `job-application-profile` step to turn this into publishable
+     platform profiles + a per-platform starting plan. Then paste a gig to get a SPEND/SKIP
+     verdict + a proposal." (Note: `job-application-profile` and the gig branch are built in
+     later steps of the freelance track.)
 
 Then move to the scheduling step (below) — don't end yet.
 

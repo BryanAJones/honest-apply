@@ -29,7 +29,21 @@ If `tracker.csv` does not exist in the same directory, create it with the header
 
 ---
 
-## The pipeline — always in this order
+## Opportunity type — route first
+
+Before running anything, decide what the user pasted:
+- **A job listing** (full-time / contract role — names a title/seniority and a company) → run
+  **The job pipeline** below.
+- **A freelance gig** (Upwork / Contra / Freelancer posting you'd bid on — names a budget,
+  duration, and a client) → run **The freelance gig pipeline** further down.
+
+If it's ambiguous, ask — don't guess. The gig pipeline needs the **Freelance Track sections
+(4-7)** of `career-profile.md`; if they're empty, point the user to `job-application-init`
+(freelance track) and `job-application-profile` first.
+
+---
+
+## The job pipeline (employment / job listings) — always in this order
 
 ### Step 1 — FIT FILTER (run before writing anything)
 
@@ -103,17 +117,95 @@ Then show the user the draft and explicitly invite edits. The user reviews every
 
 ### Step 4 — LOG to tracker
 
-Append a row to `tracker.csv` in the user's working directory:
+Append a row to `tracker.csv` in the user's working directory. The tracker has unified columns
+for both tracks:
 
 ```
-company, role, fit_verdict, predicted_rejection_reason, status, date_applied, followup_date, notes
+company, role, fit_verdict, predicted_rejection_reason, status, date_applied, followup_date, notes, opportunity_type, platform, connects_spent, won
 ```
+
+For a job listing: fill the first eight, set `opportunity_type=job`, and leave `platform`,
+`connects_spent`, `won` blank. (The gig pipeline fills the freelance columns.)
 
 Defaults:
 - `status`: "Drafted" (the user will update to "Submitted" when they actually apply)
 - `date_applied`: today
 - `followup_date`: today + 7 days
 - `notes`: which asset mapped, any flags worth remembering
+
+---
+
+## The freelance gig pipeline (when the input is a gig)
+
+The mirror of the job pipeline, re-shaped for gig work. Reads the Freelance Track sections of
+`career-profile.md` + `references/platform-economics.md`.
+
+### Step 1 — SPEND/SKIP FILTER (run before writing anything)
+
+The gig analog of the fit filter. Headline question: is this worth your **cost to apply** on
+this platform? Output:
+
+- **Verdict: SPEND / SKIP** (+ two-sentence why). On free platforms (Contra/Wellfound) this
+  means "worth my time"; on pay-per-bid (Upwork connects) it means "worth my bid budget."
+- **Cost to apply:** read the platform's model from `platform-economics.md` — a connects
+  estimate (including Upwork's dynamic re-pricing on hot gigs), or $0/time, or vetting-gate.
+  State it explicitly so the user sees the tradeoff.
+- **Hard blocks (auto-SKIP):** budget below the user's rate floor (except cold-start), scope
+  mismatch vs services offered, weak client trust signals (unverified payment, no hire history,
+  a flood of proposals already in).
+- **Cold-start exception:** if `cold_start.enabled` and `gigs_remaining > 0`, a below-floor gig
+  can still be SPEND — but label it: "SPEND — cold-start: below floor, builds reviews."
+- **Most likely reason you lose this bid:** the single biggest reason the client picks someone
+  else. The most valuable output — it tells the user whether bidding is worth it at all.
+- **Fit evidence:** which Proof Ledger entry (by service) matches this gig.
+
+**If SKIP, stop.** Talking the user out of spending connects/time on a bad-fit gig is the win —
+on Upwork it literally saves money.
+
+### Step 2 — TAILOR (only on SPEND) — the Proposal Spine
+
+Draft a short proposal off the Proposal Spine (profile §7): **client's stated problem → one line
+of proof + the single most relevant Proof Ledger link → scope/approach → price + timeline → one
+sharp question.** Rules:
+
+- Open on the CLIENT's problem in their words, not your bio. A gig buyer doesn't care about a
+  career arc.
+- Attach exactly ONE proof item — and only one that exists in the Proof Ledger **for the matched
+  service**. Never invent or over-attach.
+- Price from the rate card; in cold-start, bid toward the floor (say why if it helps).
+- New / thin proof → default to offering a **small paid trial** ("let me do a slice for $X first").
+- Respect every Proof Ledger honesty field: never imply more maturity/traction than the tag,
+  claim only the user's slice on team work, never expose a `keep-private` item.
+
+### Step 3 — ANTI-SLOP CHECK (before showing anything)
+
+Same checks as the job pipeline (copy-paste survival, banned phrases, structural tells), PLUS
+the gig-specific rule: the proposal must visibly reference THIS gig's specifics. Gig platforms
+are flooded with generic AI proposals, so generic = unread. Apply verify-before-cite to any link.
+
+### Step 4 — LOG
+
+Append to `tracker.csv` mapping to the same 12-column header (positional — for a gig, the
+SPEND/SKIP verdict reuses `fit_verdict` and the loss reason reuses `predicted_rejection_reason`):
+
+```
+company           = the client
+role              = the gig title
+fit_verdict       = SPEND or SKIP
+predicted_rejection_reason = the single most likely reason you lose this bid
+status            = Drafted
+date_applied      = today
+followup_date     = today + 7 days
+notes             = which Proof Ledger entry matched, any flags
+opportunity_type  = gig
+platform          = the platform (Upwork / Contra / ...)
+connects_spent    = estimate, or 0 on free platforms
+won               = blank until the user marks the gig won
+```
+
+When the user later marks a gig **won**, set `won=yes` and decrement `cold_start.gigs_remaining`.
+
+**Never submit a bid or spend connects automatically.** Tee it up; the user bids.
 
 ---
 
