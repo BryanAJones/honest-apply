@@ -41,6 +41,26 @@ paragraph, rewrite. If three sentences in a row have the same structure, break t
 If more than ~20% of sentences would survive copy-pasted into a different company's
 application, rewrite the specifics until they can't.
 
+## Maturity & traction honesty (the most dangerous overclaim — added 2026-06-03)
+
+The easiest lie to tell by accident is rounding a project *up*: "deployed" becomes "live," a
+side project becomes "a product," a pre-alpha with no users becomes "in users' hands." These
+read as specific and confident, so every other anti-slop test misses them. Run this explicitly:
+
+- **Don't exceed real maturity.** Tag each project/accomplishment as one of:
+  prototype / deployed-no-users / live-with-users / shipped-at-scale — and never let the
+  language imply a higher tier than its tag.
+- **Traction words are banned unless backed by a recorded number** in the Claims Ledger:
+  "live," "in production," "in users' hands," "shipped," "launched," "users love," "customers,"
+  "scaled," "growing," "thousands of [users/downloads]." No number → use the maturity tag, not
+  the marketing word.
+- **Solo vs team.** If it was a team effort, never write "I built" or "my product." Claim your
+  specific slice ("I owned product + the backlog"), not the whole thing.
+- **Verify before you cite.** Never link a demo/URL/repo, or name a product as proof, without
+  confirming it (a) loads well for a stranger — not login-walled, empty, or erroring — and
+  (b) uses the *current* name (old/renamed projects leave dead names lying around). A link to a
+  hollow or broken page is worse than no link.
+
 ## Anti-AI structural tells — never do these
 
 Surface patterns, not word-level. The tells are in the *shape* of the writing, not the

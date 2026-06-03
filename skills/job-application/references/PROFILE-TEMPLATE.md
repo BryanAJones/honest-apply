@@ -49,12 +49,17 @@
 ## 1. ASSET INVENTORY — evidence the user can do the target role
 
 > 2-3 headline assets, then supporting assets. Each must include: the thing itself, the
-> user's specific role in it, the framing for the target role, hard numbers (or honest "no
-> metric"), and explicit anti-claims (what NOT to overclaim).
+> user's specific role in it, **solo-or-team (+ the slice they owned)**, the **maturity/traction
+> tag**, the framing for the target role, hard numbers (or honest "no metric"), and explicit
+> anti-claims (what NOT to overclaim). The maturity tag + solo/team flag are what stop downstream
+> copy from rounding "deployed" up to "live, in users' hands" (see writing-style-defaults.md).
 
 ### HEADLINE ASSET 1 — [short name]
 - **What got built / decided / shipped:** [one paragraph, concrete]
 - **The user's specific role:** [what THEY decided/did, not what the team did]
+- **Solo or team (+ my slice):** [solo, OR team — and the specific piece I owned]
+- **Maturity / traction:** [prototype / deployed-no-users / live-with-users / shipped-at-scale —
+  copy must NEVER imply higher than this]
 - **Framing for [target role]:** [why this is evidence for the target role specifically]
 - **Hard numbers:** [metric + context + who measured]
 - **Do NOT claim:** [the specific overclaim version of this story to avoid]

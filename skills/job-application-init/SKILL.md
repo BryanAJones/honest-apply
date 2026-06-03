@@ -211,8 +211,15 @@ built*, not the meetings or process around it. Ready?"
 For EACH candidate asset, work through this loop:
 
 1. **The thing itself.** "What got built / shipped / decided?" One paragraph, concrete.
-2. **Your specific role.** "What did YOU personally decide or do? Not what the team did —
-   what you did." Push back if they say "we" without naming their slice.
+2. **Your specific role — plus solo/team and maturity.** "What did YOU personally decide or do?
+   Not what the team did — what you did." Push back if they say "we" without naming their slice.
+   Then capture two fields the profile now requires: (a) **solo or team** — if team, the
+   specific piece they owned (downstream copy claims only that slice, never "I built it" for a
+   team project); (b) **maturity/traction** — prototype / deployed-no-users / live-with-users /
+   shipped-at-scale. Downstream copy must never imply a higher maturity than this tag. This pair
+   is what stops "deployed" from becoming "live, in users' hands" — the single most common
+   accidental overclaim. If a project's link is the proof, also confirm it loads well for a
+   stranger (not login-walled, empty, or erroring) and uses the project's *current* name.
 3. **The framing for the target role.** Help them translate. If target is PM and the story
    is engineering work: what's the *product judgment* in the story? If target is SWE and the
    story is leadership work: what's the *technical decision* in it?

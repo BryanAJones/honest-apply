@@ -16,3 +16,8 @@ desktop.ini
 
 # Claude Code workspace state (if any leaks in)
 .claude/
+
+# Personal data — never commit to this public repo
+bryan-upwork-starter-DRAFT.md
+# Roadmap kept local for now (un-ignore to publish later)
+DESIGN-freelance-track.md

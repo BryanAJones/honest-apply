@@ -4,6 +4,14 @@ Optional spec for scheduling a recurring scan that surfaces filtered, drafted ap
 material on a daily cadence. Read this before scheduling; not every job board is fetchable
 unattended.
 
+> **Fact freshness — read before trusting any board-behavior claim below.** The specific
+> source claims in this file (Indeed anti-bot, Greenhouse/Lever usually work, Workday variable,
+> LinkedIn login wall, etc.) are a **dated prior — verified 2026-06-03 — not permanent truth.**
+> Boards change their anti-bot posture constantly. **Step 0 Reconnaissance is the live source of
+> truth:** it empirically tests each source per run, and its result overrides anything hardcoded
+> here. If a claim here conflicts with what Step 0 finds today, Step 0 wins. (Kit-wide rule: see
+> "Fact freshness" in `SKILL.md`.)
+
 ---
 
 ## What this delivers
@@ -52,7 +60,7 @@ login wall or a JS-only blank shell). Keep only the passing sources.
 - Direct ATS pages from the user's target employer watchlist (Greenhouse and Lever
   often work unattended; Workday is more variable — needs per-instance testing)
 
-**Candidate sources (often hostile to unattended fetch):**
+**Candidate sources (often hostile to unattended fetch)** *(verified 2026-06-03 — re-test via Step 0, don't trust blind):*
 - LinkedIn (login wall, anti-bot)
 - **Indeed** (anti-bot — confirmed unreliable for automated fetching; default-exclude
   unless the user explicitly opts in and accepts they may need supervised sessions)

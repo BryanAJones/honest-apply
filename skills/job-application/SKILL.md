@@ -126,6 +126,20 @@ applications it produces.
 
 ---
 
+## Fact freshness (outside-world claims)
+
+Any claim the kit makes about the *outside world* — job-board fetchability (Indeed, LinkedIn,
+Workday behavior), ATS quirks, platform fees or rules, connect prices, which boards syndicate —
+drifts and goes stale. Treat every such claim as a **dated prior, not a permanent truth**:
+
+- When you state one, carry a `verified: <date>` and re-check it rather than trusting it blind.
+- Where the kit can test live (e.g. the scan's Step 0 reconnaissance), the **live test is the
+  source of truth** and overrides any hardcoded list.
+- Never present a stale external fact as current. If you can't re-verify, say it's unverified
+  and let the user decide.
+
+---
+
 ## Additional workflows (optional)
 
 - **Daily batch mode** (find listings, filter many at once, queue for review): see
