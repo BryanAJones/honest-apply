@@ -117,11 +117,15 @@ Then show the user the draft and explicitly invite edits. The user reviews every
 
 ### Step 4 — LOG to tracker
 
-Append a row to `tracker.csv` in the user's working directory:
+Append a row to `tracker.csv` in the user's working directory. The tracker has unified columns
+for both tracks:
 
 ```
-company, role, fit_verdict, predicted_rejection_reason, status, date_applied, followup_date, notes
+company, role, fit_verdict, predicted_rejection_reason, status, date_applied, followup_date, notes, opportunity_type, platform, connects_spent, won
 ```
+
+For a job listing: fill the first eight, set `opportunity_type=job`, and leave `platform`,
+`connects_spent`, `won` blank. (The gig pipeline fills the freelance columns.)
 
 Defaults:
 - `status`: "Drafted" (the user will update to "Submitted" when they actually apply)

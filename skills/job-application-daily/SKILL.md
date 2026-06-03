@@ -153,6 +153,54 @@ Then stop. The user opens the HTML, reviews, and applies live themselves.
 
 ---
 
+## Freelance gig batch (gig mode)
+
+If the user's profile has the Freelance Track sections filled and they ask for a **gig** batch
+("run my daily gig batch," "find Upwork gigs today"), run the same four phases re-shaped for
+gigs, using the **freelance gig pipeline** in `../job-application/SKILL.md` (SPEND/SKIP +
+Proposal Spine) and `../job-application/references/platform-economics.md`.
+
+### Phase 1 — SOURCE (honest limits first)
+
+Source new gigs from the user's target freelance platforms. **Be upfront about a hard limit:**
+the biggest gig platforms are *hostile to unattended fetch* — **Upwork especially** (anti-bot,
+login-gated), like LinkedIn/Indeed on the employment side. So a fully unattended gig scan is
+limited. Three realistic modes, in order:
+- **Feeds/search that work unattended** (some platforms expose search or RSS for saved
+  searches) → pull these via `WebFetch`/`firecrawl-scrape`.
+- **Supervised session** (Chrome DevTools / Playwright MCP, user watching) → for Upwork and
+  other anti-bot platforms, this is usually required. Not a background-schedulable mode.
+- **User-pasted gigs** → the user pastes a batch of gig URLs/descriptions; the kit filters and
+  drafts. Most reliable for hostile platforms.
+
+If nothing can be fetched, say so and ask the user to paste gigs — never fabricate listings.
+Capture per gig: title, client, budget, duration, posting recency, # proposals already in,
+client trust signals (payment-verified, hire history), platform, and full description.
+
+### Phase 2 — FILTER (SPEND/SKIP — even more ruthless, connects cost money)
+
+Run each gig through the **SPEND/SKIP filter**. Carry forward only SPEND. The bar is *higher*
+than employment filtering because each bid has a real cost-to-apply — a long SPEND list means
+the filter is too loose and you're about to waste connects. State estimated cost-to-apply per
+SPEND so the user sees the running spend.
+
+### Phase 3 — DRAFT (Proposal Spine)
+
+For each SPEND, draft a short proposal off the Proposal Spine (client's problem → one proof
+link from the Proof Ledger → scope → price+timeline → one question). Paid-trial default for
+new/thin-proof users. Run the gig-specific anti-slop check (must reference THIS gig's specifics).
+
+### Phase 4 — RENDER + LOG
+
+Same HTML review document and the **same non-negotiable sanitization rules** as above (gig and
+client text are untrusted — escape everything, validate URLs, restrict slugs). Log each gig to
+`tracker.csv` with `opportunity_type=gig`, `platform`, `connects_spent` (estimate until the user
+confirms the bid), verdict, predicted-loss-reason, `status=Drafted`, followup +7d.
+
+**Never place a bid or spend connects automatically.** The user reviews and bids live.
+
+---
+
 ## Scheduling (optional)
 
 This skill is designed to be triggered:
