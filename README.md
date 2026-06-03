@@ -9,6 +9,12 @@ The kit's job is **not** to maximize applications. It's to apply to the right ro
 materials that survive a skeptical hiring manager. A `SKIP` verdict — talking you out of a
 bad-fit application — is a success, not a failure.
 
+> **New to Claude Code?** It's Anthropic's AI assistant that runs in your terminal (also a
+> desktop app and IDE extensions). You need it installed first —
+> [claude.com/claude-code](https://claude.com/claude-code). After that, everything in this kit
+> happens by **typing plain-English requests** to it. There's no code for you to write, and a
+> "skill" is just a set of instructions Claude Code follows when you ask for it by name.
+
 ---
 
 ## What's in the box
@@ -109,15 +115,29 @@ skill stops cleanly and tells you instead of fabricating listings.
 
 ## Install
 
-This repo is structured as a Claude Code plugin. Install it however you usually install
-plugins (e.g. via `/plugin` in Claude Code, or by cloning into your plugins directory):
+You only do this once. Pick whichever path you're comfortable with.
 
+**Option 1 — as a plugin (recommended):**
+
+1. Download the kit to your machine. In a terminal:
+   ```bash
+   git clone https://github.com/BryanAJones/honest-apply.git
+   ```
+2. Open Claude Code and run the `/plugin` command, pointing it at the `honest-apply` folder you
+   just downloaded.
+
+**Option 2 — drop-in (if you don't use the plugin system):**
+
+Copy the four folders inside `skills/` into your Claude Code skills folder:
 ```bash
 git clone https://github.com/BryanAJones/honest-apply.git
+cp -r honest-apply/skills/* ~/.claude/skills/
 ```
+On Windows, that destination folder is `%USERPROFILE%\.claude\skills\`.
 
-If you're not using the plugin system, you can also just drop the three `skills/*`
-directories into `~/.claude/skills/` and they'll work.
+**Check it worked:** start Claude Code and type *"set up the job application kit."* If it begins
+asking you interview questions, you're set. If nothing happens, the skills aren't being found —
+re-check the folder location above.
 
 ## Compatibility
 
@@ -136,7 +156,7 @@ auto-trigger, so the user has to point the agent at the files manually.
 | Cowork | First-class | Same as Claude Code — uses the same Skills system. |
 | Cursor | Workable | Copy `skills/job-application/SKILL.md` and the relevant references into `.cursor/rules/honest-apply.mdc` or `AGENTS.md` so they're always in context. Trigger by saying "use the honest-apply pipeline on this listing." No auto-activation. |
 | Codex CLI (OpenAI) | Workable | Point the agent at the SKILL files manually each session: `codex -p "Read skills/job-application/SKILL.md and skills/job-application/references/career-profile.md, then process this listing: <paste>"`. No persistent install. |
-| GitHub Copilot Chat | Workable, awkward | Paste the relevant SKILL content into `.github/copilot-instructions.md` for workspace-level always-on instructions. Lose the multi-skill structure (init / per-listing / daily); collapses to one big instruction blob. |
+| GitHub Copilot Chat | Workable, awkward | Paste the relevant SKILL content into `.github/copilot-instructions.md` for workspace-level always-on instructions. Lose the multi-skill structure (init / per-listing / daily / profile); collapses to one big instruction blob. |
 | Windsurf, Continue, others | Workable | Same pattern as Cursor — wherever the harness loads persistent instructions, point it at the SKILL content. |
 
 **The hard dependency on Claude is the install, not the brain.** If you'd rather
@@ -147,47 +167,78 @@ because it's all prompt-level instruction.
 
 ## First-time setup (run once)
 
-**Have your current resume ready** — paste-able or as a file. The interview starts by
-reading it and uses it to ask sharper, more direct follow-ups instead of generic intake
-questions. You can skip the resume, but the resulting profile will be noticeably shallower.
+**1. Have your resume ready** — as a file or copy-pasteable text. The interview reads it to ask
+sharper questions. You can skip it, but the profile comes out shallower.
 
-In a Claude Code session, from the directory where you want your career profile and tracker
-to live (e.g. `~/job-search/`), say:
+**2. Make a folder for your job search.** The kit saves your profile and tracker into whatever
+folder Claude Code is running in (this is called your "working directory"). Make or pick one:
+```bash
+mkdir ~/job-search
+cd ~/job-search
+```
 
-> "Set up the job application kit."
+**3. Start Claude Code in that folder** and type:
 
-That triggers the `job-application-init` skill. It will walk you through the interview and,
-at the end, write two files into your current directory:
+> Set up the job application kit.
 
-- `career-profile.md` — your single source of truth. Edit it freely; the runtime always
-  re-reads it.
-- `tracker.csv` — empty (header row only). The runtime will append to it.
+This starts the `job-application-init` interview. It will first ask whether you're targeting
+**full-time jobs, freelance gig work, or both**, then walk you through ~15-30 minutes of
+questions. It pushes back on vague or inflated answers — that's the point.
 
-**Back up `career-profile.md`.** It's the artifact the entire kit depends on. Commit it to
-a private repo, drop it in a password manager attachment field, whatever — just don't lose it.
+**4. When it finishes, two files appear in your folder:**
+
+- `career-profile.md` — your single source of truth. Edit it anytime; the kit always re-reads it.
+- `tracker.csv` — empty for now (just column headers); the kit adds a row per application.
+
+**5. Back up `career-profile.md`.** It's the one file the whole kit depends on. A private repo,
+a cloud drive, a password-manager note — anything, just don't lose it.
 
 ## Daily use
 
-From the same directory (so the skill can find `career-profile.md` and `tracker.csv`),
-paste a job listing into Claude Code:
+Always start Claude Code **in the same folder** you set up in, so it can find your
+`career-profile.md` and `tracker.csv`.
+
+### Full-time jobs
+
+Paste a listing and ask:
 
 > Here's a role: [paste]
 > Should I apply?
 
-The `job-application` skill will activate, run the pipeline, and either:
-- Tell you SKIP and why (and stop), or
-- Tell you APPLY/STRETCH, draft tailored materials, run anti-slop, and log the row.
+The `job-application` skill runs the pipeline and either:
+- tells you **SKIP** and why (and stops), or
+- tells you **APPLY / STRETCH**, drafts tailored materials, runs the anti-slop check, and logs
+  the row.
 
-You can also ask for just one piece ("just the cover letter," "just bullets," "filter only,
-no draft").
+You can also ask for just one piece — *"just the cover letter," "just bullets," "filter only,
+no draft."*
+
+### Freelance gigs
+
+First, build your platform profiles + a starting plan (do this once, then re-run whenever your
+work changes):
+
+> Build my freelance profile.
+
+That runs `job-application-profile`: it recommends **which platform to start on** for your
+situation, and writes ready-to-paste profiles into `freelance-profiles.md`. Then, for any gig:
+
+> Here's a gig: [paste]. Worth bidding?
+
+You'll get a **SPEND / SKIP** verdict — is it worth the cost to apply (on Upwork, every bid
+costs money) — and, if it's worth it, a short tailored proposal.
 
 ## See an example
 
-`examples/career-profile.example.md` — a fictional finished profile (Maya Chen, a
-backend engineer doing a lateral move into dev-tools). Shows what a completed
-profile looks like and how the lateral-move branch of the Cover Letter Spine plays
-out. Don't copy it verbatim — your interview will produce something different
-because it pushes on YOUR resume and YOUR situation.
+- `examples/career-profile.example.md` — a fictional finished **employment** profile (Maya
+  Chen, a backend engineer doing a lateral move into dev-tools). Shows what a completed profile
+  looks like and how the lateral-move branch of the Cover Letter Spine plays out.
+- `examples/freelance-profile.example.md` — a fictional **freelance** profile (a product/brand
+  designer). Shows the freelance sections — the Proof Ledger, rates, and platform plan — filled
+  in for a non-developer.
+
+Don't copy either verbatim — your interview produces something different because it pushes on
+YOUR resume and YOUR situation.
 
 ## Reference docs (for the curious)
 
