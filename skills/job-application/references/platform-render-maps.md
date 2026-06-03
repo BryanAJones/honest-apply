@@ -82,6 +82,20 @@ You publish **gig listings** (productized services), buyers come to you. NOT out
 Similar to Upwork (bid + profile). Map Title→`positioning`, Summary→`overview`,
 Skills→`skills[]`, Portfolio→`portfolio[]`. Confirm field limits.
 
+## Dribbble / Behance ⚠️ (portfolio gallery — link + gallery, not a fielded profile)
+
+Not a bid platform and not a fielded profile in the same sense — these are **visual portfolio
+galleries** that generate *inbound* leads. There's little to "render": you publish work and a
+short bio.
+- `portfolio[]` → gallery posts (image/video + a short caption per piece). This is the product.
+- `positioning` + a trimmed `overview` → the profile bio.
+- `services[]` / rates → optionally in the bio or a pinned post.
+- **No proposal/bid flow.** The recommender lists these as a START-HERE *home* for designers;
+  leads arrive inbound and are handled outside the gig (SPEND/SKIP) pipeline. So for these
+  platforms the Profile Pack step outputs the bio + which pieces to post, not a fielded render.
+
+Confirm current profile fields before relying.
+
 ---
 
 ## Adding a new platform

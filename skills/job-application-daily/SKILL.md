@@ -192,10 +192,21 @@ new/thin-proof users. Run the gig-specific anti-slop check (must reference THIS 
 
 ### Phase 4 — RENDER + LOG
 
-Same HTML review document and the **same non-negotiable sanitization rules** as above (gig and
-client text are untrusted — escape everything, validate URLs, restrict slugs). Log each gig to
-`tracker.csv` with `opportunity_type=gig`, `platform`, `connects_spent` (estimate until the user
-confirms the bid), verdict, predicted-loss-reason, `status=Drafted`, followup +7d.
+Render into the same `daily-review.html` template. **The template has no gig-specific fields, so
+map gig content onto its EXISTING card placeholders — never invent new placeholders.** Inventing
+fields bypasses the template's per-field escape list and risks XSS (a poisoned `daily-review.html`
+can exfiltrate `career-profile.md`). Map:
+- client → the `company` field
+- gig title → the `role_title` field
+- the drafted proposal → the `cover_letter_text` field
+- the gig URL → `apply_url` (validated as `https:`/`http:`, exactly as for listings)
+- budget / # proposals / client trust signals / cost-to-apply → fold into the evidence/`notes` text
+
+Apply the **same non-negotiable sanitization rules** as above — HTML-escape every gig/client-derived
+string, validate the URL scheme, restrict slugs. Because you reuse the already-listed placeholders,
+the existing escape list covers every gig field. Then log each gig per the gig-pipeline **Step 4
+mapping** in `../job-application/SKILL.md` (the 12-column positional layout: `opportunity_type=gig`,
+`platform`, `connects_spent` as an estimate until the user confirms the bid, `won` blank).
 
 **Never place a bid or spend connects automatically.** The user reviews and bids live.
 

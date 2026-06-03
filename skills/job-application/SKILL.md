@@ -185,9 +185,25 @@ are flooded with generic AI proposals, so generic = unread. Apply verify-before-
 
 ### Step 4 — LOG
 
-Append to `tracker.csv` with the freelance fields: platform, opportunity_type=`gig`,
-connects_spent (or 0), verdict, predicted-loss-reason, status=`Drafted`, date, followup +7d.
-(When the user later marks a gig **won**, decrement `cold_start.gigs_remaining`.)
+Append to `tracker.csv` mapping to the same 12-column header (positional — for a gig, the
+SPEND/SKIP verdict reuses `fit_verdict` and the loss reason reuses `predicted_rejection_reason`):
+
+```
+company           = the client
+role              = the gig title
+fit_verdict       = SPEND or SKIP
+predicted_rejection_reason = the single most likely reason you lose this bid
+status            = Drafted
+date_applied      = today
+followup_date     = today + 7 days
+notes             = which Proof Ledger entry matched, any flags
+opportunity_type  = gig
+platform          = the platform (Upwork / Contra / ...)
+connects_spent    = estimate, or 0 on free platforms
+won               = blank until the user marks the gig won
+```
+
+When the user later marks a gig **won**, set `won=yes` and decrement `cold_start.gigs_remaining`.
 
 **Never submit a bid or spend connects automatically.** Tee it up; the user bids.
 
