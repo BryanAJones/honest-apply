@@ -13,7 +13,8 @@ bad-fit application — is a success, not a failure.
 
 ## What's in the box
 
-Three skills:
+Four skills. The kit covers **both full-time jobs and freelance gig work** (Upwork, Contra,
+Wellfound, fractional boards) — the setup interview asks which track(s) you want:
 
 - **`job-application-init`** — one-time onboarding interview. Starts by reading your
   resume, then asks ~30 minutes of questions across five sections (targeting spec,
@@ -33,7 +34,19 @@ Three skills:
   your targeting spec, filters every listing, drafts materials for the passes,
   renders an HTML review document (`daily-review.html`) in your cwd, and logs
   each role. Designed to run manually each morning or on a schedule via Claude
-  Code's `/schedule` or a Cowork recurring task.
+  Code's `/schedule` or a Cowork recurring task. Has a **gig mode** for freelance batches.
+- **`job-application-profile`** — *(freelance track)* turns your profile into **publishable
+  platform profiles** + a **starting-platform plan**. It runs a recommender (tells a new
+  freelancer *which* platform to start on, per wedge, with the cost-to-apply tradeoff —
+  not just "default to Upwork"), then renders your profile into each platform's fields
+  (Upwork's 70-char title + Specialized Profiles, Contra's portfolio-forward shape, etc.).
+  Re-run it anytime your work changes.
+
+For freelance, the per-listing skill paste-a-gig flow swaps the fit-filter for a
+**SPEND/SKIP** filter (because each bid has a real cost — Upwork connects are money) and the
+cover letter for a short **proposal**. Same honesty discipline throughout: it won't let you
+claim a project is more finished than it is, claim solo credit on team work, or link a hollow
+page.
 
 It never auto-submits. You review everything.
 

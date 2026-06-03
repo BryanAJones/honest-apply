@@ -4,7 +4,39 @@ Plain-English notes on what changed in each version, newest first. No jargon —
 the people using the kit, not just the people building it.
 
 > Versioning starts with this file. Everything the kit shipped before today is treated as the
-> **0.1.0** baseline; the changes below are **0.2.0**.
+> **0.1.0** baseline; the changes below are **0.2.0** and **0.3.0**.
+
+---
+
+## 0.3.0 — June 3, 2026 · "Freelance track"
+
+The kit now does **freelance gig work**, not just full-time jobs.
+
+**You pick a track at setup.**
+The interview asks whether you're after **employment, freelance, or both**. For freelance, it
+collects your services and rates, the platforms you're targeting, and a **proof ledger** of your
+work — and for each piece it pins down the honest stuff: was it solo or a team effort (and what
+*you* did), how finished it really is, what you can actually show a stranger, and whether it's
+even OK to make public.
+
+**A "where do I start?" step.**
+A new step (`job-application-profile`) tells you **which platform to start on**, based on your
+real profile — a designer gets pointed at Contra/Dribbble, a fractional PM at fractional boards,
+a new builder at Wellfound + small trial gigs — instead of everyone defaulting to Upwork and
+burning money bidding blind. Then it writes your profile into each platform's exact fields
+(Upwork's short title + two specialized profiles, Contra's portfolio-forward layout, etc.).
+
+**A gig flow that respects your money.**
+Paste an Upwork/Contra gig and, instead of "should I apply," you get **"is this even worth the
+cost to bid?"** (SPEND/SKIP) plus a short, specific proposal. On Upwork — where every bid costs
+real money — talking you out of the bad ones is the whole point.
+
+**Built for starting from zero.**
+Cold-start mode for brand-new freelancers (bid a little lower to earn your first reviews, always
+labeled), a **paid-trial** default when you have no reviews to show yet, and platform-fee facts
+that carry a "checked on" date and get re-verified instead of trusted forever.
+
+*This is the track that was "designed, not yet built" in 0.2.0 — now built.*
 
 ---
 
@@ -37,12 +69,8 @@ old hardcoded note — so the kit won't act on stale information about the world
 *Files touched: the writing-style rules, the profile template, the setup interview, the main
 skill, and the job-scan spec.*
 
-**Also in progress (designed, not yet built):**
-A **freelance track** — applying to gig work (Upwork, Contra, Wellfound, fractional boards), not
-just full-time jobs. It adds a short-proposal writer, a "is this gig even worth the cost to
-apply?" filter, a recommender that tells a new freelancer *which platform* to start on, and a
-profile builder. The full design is written up in `DESIGN-freelance-track.md`. None of it is in
-the skills yet — it's the next thing to build.
+**Also designed here, shipped in 0.3.0:** the **freelance track** (gig work on Upwork, Contra,
+Wellfound, fractional boards) was designed during this release and built out in 0.3.0 above.
 
 ---
 
