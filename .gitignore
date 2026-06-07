@@ -4,6 +4,9 @@ tracker.csv
 daily-queue.md
 daily-review.html
 
+# Generated Cowork packages — rebuild with `python build-cowork.py`; ship as Release assets
+cowork-build/
+
 # OS noise
 .DS_Store
 Thumbs.db

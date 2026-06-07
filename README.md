@@ -115,7 +115,20 @@ skill stops cleanly and tells you instead of fabricating listings.
 
 ## Install
 
-You only do this once. Pick whichever path you're comfortable with.
+You only do this once. First decide **where** to run it — the kit lives in two Anthropic
+surfaces, and they're good at different things:
+
+| | Claude Code | Claude Cowork |
+|---|---|---|
+| **Best for** | drafting, filtering, the daily batch, scheduling | hands-on **autofill** — filling applications on the real job sites |
+| **Why pick it** | one-command install; every skill auto-triggers on a plain-English phrase; `/schedule` plus the kit's own scheduling walkthrough; lowest friction | a desktop *working session* over your local files — and, paired with **Claude in Chrome**, it actually opens each posting and fills the form for you (stopping at submit) |
+| **Install** | plugin, or drop-in copy | upload one ZIP per skill |
+| **Tradeoff** | can't drive your browser to fill forms | install is per-skill ZIP upload; rebuild + re-upload when the kit changes |
+
+Use both if you like — draft and filter in Claude Code, autofill in Cowork. The same
+`career-profile.md` and `tracker.csv` in your job-search folder feed either one.
+
+### In Claude Code
 
 **Option 1 — as a plugin (recommended):**
 
@@ -139,11 +152,37 @@ On Windows, that destination folder is `%USERPROFILE%\.claude\skills\`.
 asking you interview questions, you're set. If nothing happens, the skills aren't being found —
 re-check the folder location above.
 
+### In Claude Cowork
+
+Cowork doesn't use the plugin system — each skill is uploaded as its own ZIP. Grab the four
+zips, then upload them:
+
+1. Get the `*.zip` files. Either download them from this repo's
+   [latest Release](https://github.com/BryanAJones/honest-apply/releases), or build them from a
+   clone (needs Python 3):
+   ```bash
+   git clone https://github.com/BryanAJones/honest-apply.git
+   cd honest-apply
+   python build-cowork.py     # writes cowork-build/job-application*.zip
+   ```
+2. In Cowork: **Customize → Skills → add a custom skill → upload ZIP**, once per file, and
+   toggle each **on**. Upload all four for the full flow.
+3. **For autofill,** pair the **Claude in Chrome** extension with Cowork — that's what fills the
+   forms. Without it, Cowork can still draft, filter, and log; it just can't fill on the sites.
+4. Open a working session in your job-search folder so `career-profile.md` + `tracker.csv` are
+   local, then say *"set up the job application kit"* to run the interview.
+
+> **Keep `job-application` enabled** — `job-application-daily` applies its fit filter and gig
+> pipeline. The Cowork zips are deliberately separate from the Claude Code `skills/` folders:
+> each is self-contained (carries its own reference files) because Cowork skills can't reach a
+> sibling skill's files the way the Claude Code plugin can. That's all `build-cowork.py` does.
+
 ## Compatibility
 
-**Primary target: Claude Code** (CLI, desktop app, IDE extensions, Cowork). The
-plugin format, auto-discovered skills, and trigger-phrase activation all assume
-Anthropic's Skills system.
+**Primary targets: Claude Code and Claude Cowork.** Both run Anthropic's Skills
+system with trigger-phrase activation — the difference is *install*. Claude Code
+uses the plugin format / auto-discovered `skills/`; Cowork uploads each skill as a
+self-contained ZIP (see **Install** above for both).
 
 **Other harnesses — partial:** the *content* is portable (the SKILL files,
 templates, and reference docs are just markdown + HTML), but the *packaging*
@@ -153,7 +192,7 @@ auto-trigger, so the user has to point the agent at the files manually.
 | Harness | Status | How to use |
 |---|---|---|
 | Claude Code | First-class | Install as a plugin; skills auto-activate on trigger phrases. |
-| Cowork | First-class | Same as Claude Code — uses the same Skills system. |
+| Cowork | First-class | Upload each skill as a self-contained ZIP via **Customize → Skills** (run `build-cowork.py` or grab a Release). Pair **Claude in Chrome** for autofill. Full steps under **Install → In Claude Cowork**. |
 | Cursor | Workable | Copy `skills/job-application/SKILL.md` and the relevant references into `.cursor/rules/honest-apply.mdc` or `AGENTS.md` so they're always in context. Trigger by saying "use the honest-apply pipeline on this listing." No auto-activation. |
 | Codex CLI (OpenAI) | Workable | Point the agent at the SKILL files manually each session: `codex -p "Read skills/job-application/SKILL.md and skills/job-application/references/career-profile.md, then process this listing: <paste>"`. No persistent install. |
 | GitHub Copilot Chat | Workable, awkward | Paste the relevant SKILL content into `.github/copilot-instructions.md` for workspace-level always-on instructions. Lose the multi-skill structure (init / per-listing / daily / profile); collapses to one big instruction blob. |
