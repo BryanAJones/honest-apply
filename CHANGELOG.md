@@ -4,7 +4,31 @@ Plain-English notes on what changed in each version, newest first. No jargon —
 the people using the kit, not just the people building it.
 
 > Versioning starts with this file. Everything the kit shipped before today is treated as the
-> **0.1.0** baseline; the changes below are **0.2.0** and **0.3.0**.
+> **0.1.0** baseline; the changes below are **0.2.0** through **0.4.0**.
+
+---
+
+## 0.4.0 — June 7, 2026 · "Runs in Claude Cowork"
+
+The kit now installs cleanly in **Claude Cowork**, Anthropic's desktop work agent — and the
+reason to bother is **autofill**. Paired with Claude in Chrome, Cowork opens each posting and
+fills the application form for you, stopping at the submit button. You still review and submit;
+it never enters financial or identity data.
+
+**Why this took real work (and what changed):**
+
+- Cowork doesn't use Claude Code's plugin system — it uploads **one ZIP per skill**, and each
+  skill folder has to stand on its own. The kit's skills used to share one set of reference
+  files and reach across folders — fine in Claude Code, broken in Cowork. A new
+  `build-cowork.py` generates self-contained, Cowork-ready zips from the same source, so there's
+  no duplicated content in the repo.
+- The README now spells out **Claude Code vs Cowork** (what each is best at) and gives the exact
+  Cowork upload steps. The old compatibility note wrongly claimed Cowork installs "the same as
+  Claude Code" — corrected.
+
+**Also fixed:** the plugin manifest was stale — still version 0.1.3, and it didn't list the
+freelance `job-application-profile` skill, so a plugin install silently skipped it. It now lists
+all four skills and tracks the real version.
 
 ---
 
